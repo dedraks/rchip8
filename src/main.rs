@@ -113,7 +113,7 @@ impl Display {
         self.data[row * DISPLAY_COLS + col] = value;
     }
 
-    fn clear(&mut self) {
+    fn clear_screen(&mut self) {
         
         self.canvas.set_draw_color(self.background_color);
         self.canvas.clear();
@@ -135,8 +135,13 @@ impl Display {
 
         for row in 0..usize::from(n) {
             println!("sprite row: 0x{:02X} {:08b}", sprite[row], sprite[row]);
+            for col in 0..8 {
+                let old_pixel = self.get_pixel( row + vx as usize, col + vx as usize);
+                //let new_pixel =(self.data[i as usize + row] >> (7 - col)) & 1;
+                //println!("new pixel: {:08b}", new_pixel);
+            }
         }
-        println!("");
+        
     }
 
     fn buffer_graphics(&mut self, mem: &mut Memory, vx: u8, vy: u8, n: u8, i: u16) {
@@ -217,7 +222,7 @@ impl CHIP8 {
         CHIP8 {
             display: Display::new(),
             mem: Memory::new(),
-            pc: 0,
+            pc: 0x200,
             i: 0,
             stack: vec![],
             v: [0; 16],
@@ -270,6 +275,7 @@ impl CHIP8 {
             }
     
             // Update
+            println!("PC: 0x{:04X}", self.pc);
             let word = self.fetch_word();
             let n1 = word & 0xF000;
             let n2 = word & 0x0F00;
@@ -289,6 +295,7 @@ impl CHIP8 {
                         0x00E0 => {
                             println!("00E0: Clear screen");
                             //self.display.clear_vram();
+                            self.display.clear_screen();
                         }
                         0x00EE => {
                             println!("00EE: Return from subroutine");        
@@ -301,6 +308,7 @@ impl CHIP8 {
                     //println!("1 Category");
                     let addr = word & 0x0FFF;
                     println!("Jump to addr: 0x{:04X}", addr);
+                    self.pc = addr;
                 }
                 0x2000 => {
                     let addr = word & 0x0FFF;
@@ -372,10 +380,10 @@ impl CHIP8 {
 fn main() -> Result<(), String> {
     let mut chip8 = CHIP8::new();
     
-    // Clear screen
-    chip8.mem[0x0000] = 0x00;
-    chip8.mem[0x0001] = 0xe0;
+    
 
+
+    /* 
     // Return from subroutine
     chip8.mem[0x0002] = 0x00;
     chip8.mem[0x0003] = 0xee;
@@ -459,28 +467,39 @@ fn main() -> Result<(), String> {
     // Set i register to 0x0BCD
     chip8.mem[0x0030] = 0xAB;
     chip8.mem[0x0031] = 0xCD;
+    */
 
+    // Clear screen
+    chip8.mem[0x0200] = 0x00;
+    chip8.mem[0x0201] = 0xe0;
     // Draw 1 pixel tall at (5, 8)
         // Set register VA to 0x07
-        chip8.mem[0x0032] = 0x6A;
-        chip8.mem[0x0033] = 0x01;
+        chip8.mem[0x0202] = 0x6A;
+        chip8.mem[0x0203] = 0x01;
+
         // Set register VB to 0x05
-        chip8.mem[0x0034] = 0x6B;
-        chip8.mem[0x0035] = 0x00;
+        chip8.mem[0x0204] = 0x6B;
+        chip8.mem[0x0205] = 0x00;
+
         // Set strite in memory
-        chip8.mem[0x00F8] = 0xBA;
-        chip8.mem[0x00F9] = 0x7C;
-        chip8.mem[0x00FA] = 0xD6;
-        chip8.mem[0x00FB] = 0xFE;
-        chip8.mem[0x00FC] = 0x54;
-        chip8.mem[0x00FD] = 0xAA;
+        chip8.mem[0x02F8] = 0xBA;
+        chip8.mem[0x02F9] = 0x7C;
+        chip8.mem[0x02FA] = 0xD6;
+        chip8.mem[0x02FB] = 0xFE;
+        chip8.mem[0x02FC] = 0x54;
+        chip8.mem[0x02FD] = 0xAA;
         
         // Set register i to 0xFFF
-        chip8.mem[0x0036] = 0xA0;
-        chip8.mem[0x0037] = 0xF8;
+        chip8.mem[0x0206] = 0xA2;
+        chip8.mem[0x0207] = 0xF8;
+
         // Draw 1 pixel (value in n) tall sprite in the coords A, B (values in VA, VB)
-        chip8.mem[0x0038] = 0xDA;
-        chip8.mem[0x0039] = 0xB6;
+        chip8.mem[0x0208] = 0xDA;
+        chip8.mem[0x0209] = 0xB6;
+
+        // Jump to 0x200
+        chip8.mem[0x020A] = 0x12;
+        chip8.mem[0x020B] = 0x00;
     
 
     //let value = chip8.fetch_word();

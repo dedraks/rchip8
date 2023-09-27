@@ -130,12 +130,13 @@ impl Display {
         //let sprite = &mem.data[usize::from(i)..usize::from(i + (n * 2) as u16)];
 
         for s in i..(i + n as u16) {
-            sprite[(s - i) as usize] = mem[s as usize];
+            sprite[usize::from(s - i)] = mem[usize::from(s)];
         }
 
-        for s_row in sprite {
-            println!("sprite row: 0x{:02X}", s_row) ;
+        for row in 0..usize::from(n) {
+            println!("sprite row: 0x{:02X} {:08b}", sprite[row], sprite[row]);
         }
+        println!("");
     }
 
     fn buffer_graphics(&mut self, mem: &mut Memory, vx: u8, vy: u8, n: u8, i: u16) {
@@ -173,12 +174,10 @@ impl Display {
 
         self.canvas.set_draw_color(self.draw_color);
         for i in 0..(DISPLAY_COLS * DISPLAY_ROWS) {
-            //self.data[i] = rng.gen_range(0..2);
-            //print!("{}", self.data[i]);
             if self.data[i] != 0 {
-                println!("print pixel {}", self.data[i]);
+                //println!("print pixel {}", self.data[i]);
                 let d = from_idx(i);
-                println!("i {}, d ({} {})", i, d.0, d.1);
+                //println!("i {}, d ({} {})", i, d.0, d.1);
                 self.canvas.draw_point(Point::new( d.0 as i32 , d.1 as i32)).unwrap();        
             }
         }
@@ -352,7 +351,7 @@ impl CHIP8 {
                     //let end = start + (n as usize);
                     //self.v[0xF] = self.display.draw_sprite_no_wrap(self.v[i as usize], self.v[j as usize], &self.mem.data[start..end]);
                     //self.display.memset(i as u8, j as u8, n);
-                    self.display.buffer_graphics(&mut self.mem, y, x, n,  self.i,);
+                    self.display.buffer_graphics2(&mut self.mem, y, x, n,  self.i,);
                 }
                 _ => {}
             }
@@ -469,31 +468,20 @@ fn main() -> Result<(), String> {
         chip8.mem[0x0034] = 0x6B;
         chip8.mem[0x0035] = 0x00;
         // Set strite in memory
-        chip8.mem[0x00FE] = 0xFF;
-        chip8.mem[0x00FF] = 0xFF;
+        chip8.mem[0x00F8] = 0xBA;
+        chip8.mem[0x00F9] = 0x7C;
+        chip8.mem[0x00FA] = 0xD6;
+        chip8.mem[0x00FB] = 0xFE;
+        chip8.mem[0x00FC] = 0x54;
+        chip8.mem[0x00FD] = 0xAA;
+        
         // Set register i to 0xFFF
         chip8.mem[0x0036] = 0xA0;
-        chip8.mem[0x0037] = 0xFF;
+        chip8.mem[0x0037] = 0xF8;
         // Draw 1 pixel (value in n) tall sprite in the coords A, B (values in VA, VB)
         chip8.mem[0x0038] = 0xDA;
-        chip8.mem[0x0039] = 0xB7;
+        chip8.mem[0x0039] = 0xB6;
     
-    // Draw 1 pixel tall at (5, 8)
-        // Set register VA to 0x07
-        chip8.mem[0x0040] = 0x6C;
-        chip8.mem[0x0041] = 0x02;
-        // Set register VB to 0x05
-        chip8.mem[0x0042] = 0x6D;
-        chip8.mem[0x0043] = 0x01;
-        // Set strite in memory
-        chip8.mem[0x00F0] = 0xFF;
-        chip8.mem[0x00F1] = 0xFF;
-        // Set register i to 0xFFF
-        chip8.mem[0x0044] = 0xA0;
-        chip8.mem[0x0045] = 0xF0;
-        // Draw 1 pixel (value in n) tall sprite in the coords A, B (values in VA, VB)
-        chip8.mem[0x0046] = 0xDC;
-        chip8.mem[0x0047] = 0xD1;
 
     //let value = chip8.fetch_word();
     //println!("Val:    0x{:04X}  {:016b}",  value,    value);
@@ -513,7 +501,7 @@ fn main() -> Result<(), String> {
     
         
 
-    chip8.load_program(program);
+    //chip8.load_program(program);
     
 
     chip8.run()

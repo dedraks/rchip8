@@ -7,6 +7,6 @@ edition = "2021"
 
 [dependencies]
 rand = "0.8.5"
-rang = "0.1.1"
 sdl2 = "0.35.2"
 sdl2-sys = "0.35.2"
+

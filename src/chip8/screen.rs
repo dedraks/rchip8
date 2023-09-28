@@ -117,6 +117,7 @@ impl Screen {
     pub fn render(&mut self) {
         //let mut rng = rand::thread_rng();
         //self.clear();
+        let mut present = false;
 
         self.canvas.set_draw_color(self.draw_color);
         for i in 0..(DISPLAY_COLS * DISPLAY_ROWS) {
@@ -126,6 +127,7 @@ impl Screen {
                 let d = from_idx(i);
                 //println!("i {}, d ({} {})", i, d.0, d.1);
                 self.canvas.draw_point(Point::new( d.0 as i32 , d.1 as i32)).unwrap();        
+                present = true;
             }
         }
         println!("");
@@ -135,6 +137,8 @@ impl Screen {
         let rect =Rect::new((DISPLAY_COLS + 1) as i32, 0, 20, 32) ;
         self.canvas.fill_rect(rect);*/
 
-        self.canvas.present();
+        if present {
+            self.canvas.present();
+        }
     }
 }

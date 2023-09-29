@@ -104,10 +104,11 @@ impl Screen {
 
             let rev = [7, 6, 5, 4, 3, 2, 1, 0];
 
-            for col in (0..8) {
+            for col in 0..8 {
                 let old_pixel = self.get_pixel( row + vx as usize, rev[col] + vy as usize);
                 let pixel = sprite[row] & (1 << col) != 0;
                 let new_pixel = pixel ^ old_pixel;
+                println!("old: {}, curr: {}, new: {}", old_pixel, pixel, new_pixel);
                 //println!("old: {}, current: {}, new: {}", old_pixel, pixel, new_pixel);
                 self.set_pixel(vx as usize + row, vy as usize + rev[col], new_pixel);                
             }
@@ -116,7 +117,8 @@ impl Screen {
 
     pub fn render(&mut self) {
         //let mut rng = rand::thread_rng();
-        //self.clear();
+        self.canvas.set_draw_color(self.background_color);
+        self.canvas.clear();
         let mut present = false;
 
         self.canvas.set_draw_color(self.draw_color);

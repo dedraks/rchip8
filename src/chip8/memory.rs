@@ -4,7 +4,7 @@ use std::ops::{Index, IndexMut};
 pub const MAX_MEM: usize = 1024 * 4;
 /// Memory representation
 pub struct Memory {
-    data: [u8; MAX_MEM]
+    pub data: [u8; MAX_MEM]
 }
 
 impl Memory {

@@ -1,9 +1,11 @@
-use chip8::memory::MAX_MEM;
-use chip8::chip8::START_VECTOR;
 use std::fs::File;
 use std::io::BufReader;
 use std::io::Read;
 use std::env;
+
+
+use chip8::memory::MAX_MEM;
+use chip8::chip8::PROGRAM_ADDRESS;
 use crate::chip8::memory::Memory;
 use crate::chip8::chip8::CHIP8;
 mod chip8;
@@ -51,8 +53,9 @@ fn main() -> Result<(), String> {
             // Jump to 0x020A
             chip8.mem[0x020C] = 0x12;
             chip8.mem[0x020D] = 0x0A;
+        
     } else {
-        let mut program = [0; MAX_MEM - START_VECTOR];
+        let mut program = [0; MAX_MEM - PROGRAM_ADDRESS];
 
         let filename = &args[1];
 

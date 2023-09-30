@@ -90,7 +90,7 @@ impl Screen {
         self.canvas.clear();
     }
 
-    pub fn buffer_graphics(&mut self, mem: &mut Memory, vx: u8, vy: u8, n: u8, i: u16) {
+    pub fn buffer_graphics(&mut self, mem: &mut [u8; 4096], vx: u8, vy: u8, n: u8, i: u16) {
         let mut sprite = [0u8; SPRITE_MAX_ROWS];
         //let sprite = &mem.data[usize::from(i)..usize::from(i + (n * 2) as u16)];
 
@@ -108,7 +108,7 @@ impl Screen {
                 let old_pixel = self.get_pixel( row + vx as usize, rev[col] + vy as usize);
                 let pixel = sprite[row] & (1 << col) != 0;
                 let new_pixel = pixel ^ old_pixel;
-                println!("old: {}, curr: {}, new: {}", old_pixel, pixel, new_pixel);
+                //println!("old: {}, curr: {}, new: {}", old_pixel, pixel, new_pixel);
                 //println!("old: {}, current: {}, new: {}", old_pixel, pixel, new_pixel);
                 self.set_pixel(vx as usize + row, vy as usize + rev[col], new_pixel);                
             }

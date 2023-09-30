@@ -17,42 +17,68 @@ fn main() -> Result<(), String> {
     
     if args.len() < 2 {
     // Clear screen
-    chip8.mem[0x0200] = 0x00;
-    chip8.mem[0x0201] = 0xe0;
+    chip8.ram[0x0200] = 0x00;
+    chip8.ram[0x0201] = 0xe0;
     // Draw 1 pixel tall at (5, 8)
         // Set register VA to 0x07
         //chip8.mem[0x0202] = 0x6A;
         //chip8.mem[0x0203] = 0x01;
-        chip8.mem[0x0202] = 0x7A;
-        chip8.mem[0x0203] = 0x01;
+        
 
-        // Set register VB to 0x05
-        chip8.mem[0x0204] = 0x6B;
-        chip8.mem[0x0205] = 0x00;
+        // MOVE RIGHT IF KEY_9 IS PRESSED
+        // Set the value of V0 to 9
+        chip8.ram[0x202] = 0x60;
+        chip8.ram[0x203] = 0x09;
+        // Skip next instruction if key_9 (value in v0) is not pressed
+        chip8.ram[0x204] = 0xE0;
+        chip8.ram[0x205] = 0xA1;
+        // Increments A by 1
+        chip8.ram[0x0206] = 0x7A;
+        chip8.ram[0x0207] = 0x01;
+        // END MOVE RIGHT
+
+
+        // MOVE LEFT IF KEY_7 IS PRESSED
+        // Set the value of V1 to 7
+        chip8.ram[0x208] = 0x61;
+        chip8.ram[0x209] = 0x07;
+        // Set the value of V4 to 1
+        chip8.ram[0x20A] = 0x64;
+        chip8.ram[0x20B] = 0x01;
+        // Skip next instruction if key_7 (value in v1) is not pressed
+        chip8.ram[0x20C] = 0xE1;
+        chip8.ram[0x20D] = 0xA1;
+        // Subtract VA by V4
+        chip8.ram[0x020E] = 0x8A;
+        chip8.ram[0x020F] = 0x45;
+        // END MOVE LEFT
+
+
+        // Set register VB to 0x00
+        chip8.ram[0x0210] = 0x6B;
+        chip8.ram[0x0211] = 0x00;
 
         // Set strite in memory
-        chip8.mem[0x020E] = 0xBA;
-        chip8.mem[0x020F] = 0x7C;
-        chip8.mem[0x0210] = 0xD6;
-        chip8.mem[0x0211] = 0xFE;
-        chip8.mem[0x0212] = 0x54;
-        chip8.mem[0x0213] = 0xAA;
+        chip8.ram[0x0218] = 0xBA;
+        chip8.ram[0x0219] = 0x7C;
+        chip8.ram[0x021A] = 0xD6;
+        chip8.ram[0x021B] = 0xFE;
+        chip8.ram[0x021C] = 0x54;
+        chip8.ram[0x021D] = 0xAA;
         
         // Set register i to 0xFFF
-        chip8.mem[0x0206] = 0xA2;
-        chip8.mem[0x0207] = 0x0E;
+        chip8.ram[0x0212] = 0xA2;
+        chip8.ram[0x0213] = 0x18;
 
         // Draw 1 pixel (value in n) tall sprite in the coords A, B (values in VA, VB)
-        chip8.mem[0x0208] = 0xDA;
-        chip8.mem[0x0209] = 0xB6;
+        chip8.ram[0x0214] = 0xDA;
+        chip8.ram[0x0215] = 0xB6;
 
         // Infinite loop            
             // Jump to 0x02A0
-            chip8.mem[0x020A] = 0x12;
-            chip8.mem[0x020B] = 0x00;
-            // Jump to 0x020A
-            chip8.mem[0x020C] = 0x12;
-            chip8.mem[0x020D] = 0x0A;
+            chip8.ram[0x0216] = 0x12;
+            chip8.ram[0x0217] = 0x00;
+            
         
     } else {
         let mut program = [0; MAX_MEM - PROGRAM_ADDRESS];
@@ -60,17 +86,13 @@ fn main() -> Result<(), String> {
         let filename = &args[1];
 
         let mut i = 0usize;
-        //let my_buf = BufReader::new(File::open("./space.ch8").unwrap());
         let my_buf = BufReader::new(File::open(filename).unwrap());
-        //let my_buf = BufReader::new(File::open("./fill.ch8").unwrap());
         for byte_or_error in my_buf.bytes() {
             let byte = byte_or_error.unwrap();
-            //println!("{:b}", byte);
             program[i] = byte;
             i+=1;
         }
 
-    
         chip8.load_program(program, i);
     }
 

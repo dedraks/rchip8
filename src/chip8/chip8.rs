@@ -14,7 +14,7 @@ pub const PROGRAM_ADDRESS: usize = 0x0200;
 
 pub const FONT_ADDRESS: usize = 0x50;
 
-const font: [u8; 80] = 
+const FONT: [u8; 80] = 
         [0x60, 0xB0, 0xD0, 0x90, 0x60, // 0
          0x20, 0x60, 0x20, 0x20, 0x70, // 1
          0xF0, 0x10, 0xF0, 0x80, 0xF0, // 2
@@ -70,7 +70,7 @@ impl CHIP8 {
         //let mut mem = memory::Memory::new();
         let mut ram = [0; 4096];
 
-        ram[FONT_ADDRESS .. font.len() + FONT_ADDRESS].copy_from_slice(&font);
+        ram[FONT_ADDRESS .. FONT.len() + FONT_ADDRESS].copy_from_slice(&FONT);
 
         CHIP8 {
             display: Screen::new(),
@@ -368,7 +368,7 @@ impl CHIP8 {
         let x_index = self.decode_x_index(word);
         self.i += self.v[x_index] as u16;
         
-        // AMIGA inerpreter behavior sets VF to 1 if I overflows from 0x0FFF to above 0x1000.
+        // AMIGA interpreter behavior sets VF to 1 if I overflows from 0x0FFF to above 0x1000.
         if self.i > 0x0FFF {
             self.v[0xF] = 1;
         }
@@ -432,7 +432,7 @@ impl CHIP8 {
         word
     }
 
-    /// Loads a program into memory at addres START_VECTOR
+    /// Loads a program into memory at address START_VECTOR
     pub fn load_program(&mut self, program: [u8; memory::MAX_MEM - PROGRAM_ADDRESS], size: usize) {
         for i in PROGRAM_ADDRESS..(size + PROGRAM_ADDRESS) {
             self.ram[i] = program[i - PROGRAM_ADDRESS];
@@ -487,7 +487,7 @@ impl CHIP8 {
             let nn = self.decode_nn(word);
             let n = self.decode_n(word);
 
-            // Match the istruction category
+            // Match the instruction category
             match ins_category {
                 0x0 => {
                     match nn {
@@ -548,7 +548,7 @@ impl CHIP8 {
                         // 8XY5 -> Subtract V[Y] from V[X], set V[F] = NOT borrow
                         0x5 => self.op_8xy5(word),
 
-                        // 8XY6 -> Shift V[X] rigth 
+                        // 8XY6 -> Shift V[X] right 
                         0x6 => self.op_8xy6(word),
 
                         // 8XY7 -> Subtract V[X] from V[Y], set V[F] = NOT borrow,
@@ -619,6 +619,7 @@ impl CHIP8 {
 
                         // 0xFX55
                         // Store registers V0 through Vx in memory starting at location I.
+                        
                         0x0055 => self.op_fx55(word),
 
                         // 0xFX65

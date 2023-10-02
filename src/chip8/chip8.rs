@@ -2,10 +2,11 @@ use rand::Rng;
 use std::time::Duration;
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
-
+use std::{thread, time};
 use crate::chip8::memory;
 use crate::chip8::screen::Screen;
-
+use crate::chip8::synth::Synth;
+use crate::chip8::chip8::thread::JoinHandle;
 use super::memory::MAX_MEM;
 
 //use super::screen::Screen;
@@ -61,6 +62,9 @@ pub struct CHIP8 {
     st: u8,
 
     key_state: KeyState,
+
+    synth: Synth,
+
 }
 
 
@@ -83,8 +87,11 @@ impl CHIP8 {
             dt: 0,
             st: 0,
             key_state: KeyState::new(),
+            synth: Synth::new(),
         }
     }
+    
+
 
     fn decode_x_index(&mut self, word: u16) -> usize {
         usize::from((word & 0x0F00) >> 8)
@@ -350,8 +357,23 @@ impl CHIP8 {
         self.v[x_index] = self.dt;
     }
 
+    /// FX0A -> Wait for a key press, store the value of the key in Vx.
+    /// All execution stops until a key is pressed, then the value of that key is stored in Vx.
     fn op_fx0a(&mut self, word: u16) {
-        panic!("Not yet implemented");
+        let x_index = self.decode_x_index(word);
+        
+        // Get the hexadecimal value of the currently pressed key.
+        // If no key is pressed, the function returns 0xFF (255)
+        let key = self.key_state.get_pressed_key();
+
+        // If the funcion returnd a valid key value (anything != 255)
+        // Set this value to the register
+        // Otherwise decrements the program counter by 2
+        if key != 255 {
+            self.v[x_index] = key;
+        } else {
+            self.pc -= 2;
+        }
     }
 
     fn op_fx15(&mut self, word: u16) {
@@ -595,9 +617,7 @@ impl CHIP8 {
                         // 0xFX07 -> V[X] = DT - The value of DT is placed into Vx.
                         0x0007 => self.op_fx07(word),
 
-                        // FX0A
-                        // Wait for a key press, store the value of the key in Vx.
-                        // All execution stops until a key is pressed, then the value of that key is stored in Vx.
+                        // FX0A -> Wait for a key press, store the value of the key in Vx.
                         0x000A => self.op_fx0a(word),
 
                         // 0xFX15 -> DT = V[X] - The value of V[X] is placed into DT.
@@ -630,12 +650,23 @@ impl CHIP8 {
                 }
                 _ => {}
             }
-    
+
+           
+            if self.st > 0 {
+                self.st -= 1;
+                if ! self.synth.is_playing {
+                    self.synth.play();
+                }
+            }
+            if self.st == 0 && self.synth.is_playing {
+                self.synth.pause();
+            }
+
             // Render
             self.display.render();
     
             // Time management!
-            ::std::thread::sleep(Duration::new(0, 1_000_000_000u32 / 120));
+            ::std::thread::sleep(Duration::new(0, 1_000_000_000u32 / 60));
         }
 
         
@@ -685,6 +716,45 @@ impl KeyState {
             key_d: false,
             key_e: false,
             key_f: false,
+        }
+    }
+
+
+    fn get_pressed_key(&self) -> u8 {
+        if self.key_0 {
+            0x0
+        } else if self.key_1 {
+            0x1 
+        } else if self.key_2 {
+            0x2
+        } else if self.key_3 {
+            0x3
+        } else if self.key_4 {
+            0x4
+        } else if self.key_5 {
+            0x5
+        } else if self.key_6 {
+            0x6
+        } else if self.key_7 {
+            0x7
+        } else if self.key_8 {
+            0x8
+        } else if self.key_9 {
+            0x9
+        } else if self.key_a {
+            0xA
+        } else if self.key_b {
+            0xB
+        } else if self.key_c {
+            0xC
+        } else if self.key_d {
+            0xD
+        } else if self.key_e {
+            0xE
+        } else if self.key_f {
+            0xf
+        } else {
+            255
         }
     }
 

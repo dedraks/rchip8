@@ -16,9 +16,16 @@ fn main() -> Result<(), String> {
     let args: Vec<String> = env::args().collect();
     
     if args.len() < 2 {
+
+    // Play sound for 2 secondes
+    chip8.ram[0x0200] = 0x6E; 
+    chip8.ram[0x0201] = 0x08;
+    chip8.ram[0x0202] = 0xFE;
+    chip8.ram[0x0203] = 0x18;
+
     // Clear screen
-    chip8.ram[0x0200] = 0x00;
-    chip8.ram[0x0201] = 0xe0;
+    chip8.ram[0x0204] = 0x00;
+    chip8.ram[0x0205] = 0xe0;
     // Draw 1 pixel tall at (5, 8)
         // Set register VA to 0x07
         //chip8.mem[0x0202] = 0x6A;
@@ -27,81 +34,85 @@ fn main() -> Result<(), String> {
 
         // MOVE RIGHT IF KEY_9 IS PRESSED
         // Set the value of V0 to 9
-        chip8.ram[0x202] = 0x60;
-        chip8.ram[0x203] = 0x09;
+        chip8.ram[0x206] = 0x60;
+        chip8.ram[0x207] = 0x09;
         // Skip next instruction if key_9 (value in v0) is not pressed
-        chip8.ram[0x204] = 0xE0;
-        chip8.ram[0x205] = 0xA1;
+        chip8.ram[0x208] = 0xE0;
+        chip8.ram[0x209] = 0xA1;
         // Increments A by 1
-        chip8.ram[0x0206] = 0x7A;
-        chip8.ram[0x0207] = 0x01;
+        chip8.ram[0x020A] = 0x7A;
+        chip8.ram[0x020B] = 0x01;
         // END MOVE RIGHT
 
 
         // MOVE LEFT IF KEY_7 IS PRESSED
         // Set the value of V1 to 7
-        chip8.ram[0x208] = 0x61;
-        chip8.ram[0x209] = 0x07;
+        chip8.ram[0x20C] = 0x61;
+        chip8.ram[0x20D] = 0x07;
         // Set the value of V4 to 1
-        chip8.ram[0x20A] = 0x64;
-        chip8.ram[0x20B] = 0x01;
+        chip8.ram[0x20E] = 0x64;
+        chip8.ram[0x20F] = 0x01;
         // Skip next instruction if key_7 (value in v1) is not pressed
-        chip8.ram[0x20C] = 0xE1;
-        chip8.ram[0x20D] = 0xA1;
+        chip8.ram[0x210] = 0xE1;
+        chip8.ram[0x211] = 0xA1;
         // Subtract VA by V4
-        chip8.ram[0x020E] = 0x8A;
-        chip8.ram[0x020F] = 0x45;
+        chip8.ram[0x0212] = 0x8A;
+        chip8.ram[0x0213] = 0x45;
         // END MOVE LEFT
 
 
         // MOVE DOWN IF KEY_0 IS PRESSED
         // Set the value of V2 to 0
-        chip8.ram[0x210] = 0x62;
-        chip8.ram[0x211] = 0x00;
+        chip8.ram[0x214] = 0x62;
+        chip8.ram[0x215] = 0x00;
         // Skip next instruction if key_0 (value in v2) is not pressed
-        chip8.ram[0x212] = 0xE2;
-        chip8.ram[0x213] = 0xA1;
+        chip8.ram[0x216] = 0xE2;
+        chip8.ram[0x217] = 0xA1;
         // Increments B by 1
-        chip8.ram[0x0214] = 0x7B;
-        chip8.ram[0x0215] = 0x01;
+        chip8.ram[0x0218] = 0x7B;
+        chip8.ram[0x0219] = 0x01;
         // END MOVE DOWN
 
         // MOVE UP IF KEY_5 IS PRESSED
         // Set the value of V3 to 5
-        chip8.ram[0x216] = 0x63;
-        chip8.ram[0x217] = 0x05;
+        chip8.ram[0x21A] = 0x63;
+        chip8.ram[0x21B] = 0x05;
         // Set the value of V4 to 1
-        chip8.ram[0x218] = 0x64;
-        chip8.ram[0x219] = 0x01;
+        chip8.ram[0x21C] = 0x64;
+        chip8.ram[0x21D] = 0x01;
         // Skip next instruction if key_5 (value in v3) is not pressed
-        chip8.ram[0x21A] = 0xE3;
-        chip8.ram[0x21B] = 0xA1;
+        chip8.ram[0x21E] = 0xE3;
+        chip8.ram[0x21F] = 0xA1;
         // Subtract VB by V4
-        chip8.ram[0x021C] = 0x8B;
-        chip8.ram[0x021D] = 0x45;
+        chip8.ram[0x0220] = 0x8B;
+        chip8.ram[0x0221] = 0x45;
         // END MOVE LEFT
 
 
         // Set strite in memory
-        chip8.ram[0x0224] = 0xBA;
-        chip8.ram[0x0225] = 0x7C;
-        chip8.ram[0x0226] = 0xD6;
-        chip8.ram[0x0227] = 0xFE;
-        chip8.ram[0x0228] = 0x54;
-        chip8.ram[0x0229] = 0xAA;
+        chip8.ram[0x022A] = 0xBA;
+        chip8.ram[0x022B] = 0x7C;
+        chip8.ram[0x022C] = 0xD6;
+        chip8.ram[0x022D] = 0xFE;
+        chip8.ram[0x022E] = 0x54;
+        chip8.ram[0x022F] = 0xAA;
         
         // Set register i to the address of sprite
-        chip8.ram[0x021E] = 0xA2;
-        chip8.ram[0x021F] = 0x24;
+        chip8.ram[0x0222] = 0xA2;
+        chip8.ram[0x0223] = 0x2A;
 
         // Draw 1 pixel (value in n) tall sprite in the coords A, B (values in VA, VB)
-        chip8.ram[0x0220] = 0xDA;
-        chip8.ram[0x0221] = 0xB6;
+        chip8.ram[0x0224] = 0xDA;
+        chip8.ram[0x0225] = 0xB6;
+
+        // Wait until a key is pressed
+        chip8.ram[0x0226] = 0xF8;
+        chip8.ram[0x0227] = 0x0A;
 
         // Infinite loop            
             // Jump to 0x02A0
-            chip8.ram[0x0222] = 0x12;
-            chip8.ram[0x0223] = 0x00;
+            chip8.ram[0x0228] = 0x12;
+            chip8.ram[0x0229] = 0x04;
             
         
     } else {
@@ -213,9 +224,6 @@ fn main() -> Result<(), String> {
     //let value = chip8.fetch_word();
     //println!("Val:    0x{:04X}  {:016b}",  value,    value);
     //println!("PC:     0x{:04X}  {:016b}",  chip8.pc,  chip8.pc);
-
-
-    
 
     chip8.run()
 }

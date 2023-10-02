@@ -352,6 +352,7 @@ impl CHIP8 {
         }
     }
 
+    /// 0xFX07 -> V[X] = DT - The value of DT is placed into Vx.
     fn op_fx07(&mut self, word: u16) {
         let x_index = usize::from((word & 0x0F00) >> 8);
         self.v[x_index] = self.dt;
@@ -639,7 +640,6 @@ impl CHIP8 {
 
                         // 0xFX55
                         // Store registers V0 through Vx in memory starting at location I.
-
                         0x0055 => self.op_fx55(word),
 
                         // 0xFX65
@@ -720,6 +720,7 @@ impl KeyState {
     }
 
 
+    /// Returns the value of the key currently pressed. If no key is pressed, return 0xFF
     fn get_pressed_key(&self) -> u8 {
         if self.key_0 {
             0x0
@@ -752,9 +753,9 @@ impl KeyState {
         } else if self.key_e {
             0xE
         } else if self.key_f {
-            0xf
+            0xF
         } else {
-            255
+            0xFF
         }
     }
 

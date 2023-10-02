@@ -54,30 +54,54 @@ fn main() -> Result<(), String> {
         // END MOVE LEFT
 
 
-        // Set register VB to 0x00
-        chip8.ram[0x0210] = 0x6B;
-        chip8.ram[0x0211] = 0x00;
+        // MOVE DOWN IF KEY_0 IS PRESSED
+        // Set the value of V2 to 0
+        chip8.ram[0x210] = 0x62;
+        chip8.ram[0x211] = 0x00;
+        // Skip next instruction if key_0 (value in v2) is not pressed
+        chip8.ram[0x212] = 0xE2;
+        chip8.ram[0x213] = 0xA1;
+        // Increments B by 1
+        chip8.ram[0x0214] = 0x7B;
+        chip8.ram[0x0215] = 0x01;
+        // END MOVE DOWN
+
+        // MOVE UP IF KEY_5 IS PRESSED
+        // Set the value of V3 to 5
+        chip8.ram[0x216] = 0x63;
+        chip8.ram[0x217] = 0x05;
+        // Set the value of V4 to 1
+        chip8.ram[0x218] = 0x64;
+        chip8.ram[0x219] = 0x01;
+        // Skip next instruction if key_5 (value in v3) is not pressed
+        chip8.ram[0x21A] = 0xE3;
+        chip8.ram[0x21B] = 0xA1;
+        // Subtract VB by V4
+        chip8.ram[0x021C] = 0x8B;
+        chip8.ram[0x021D] = 0x45;
+        // END MOVE LEFT
+
 
         // Set strite in memory
-        chip8.ram[0x0218] = 0xBA;
-        chip8.ram[0x0219] = 0x7C;
-        chip8.ram[0x021A] = 0xD6;
-        chip8.ram[0x021B] = 0xFE;
-        chip8.ram[0x021C] = 0x54;
-        chip8.ram[0x021D] = 0xAA;
+        chip8.ram[0x0224] = 0xBA;
+        chip8.ram[0x0225] = 0x7C;
+        chip8.ram[0x0226] = 0xD6;
+        chip8.ram[0x0227] = 0xFE;
+        chip8.ram[0x0228] = 0x54;
+        chip8.ram[0x0229] = 0xAA;
         
-        // Set register i to 0xFFF
-        chip8.ram[0x0212] = 0xA2;
-        chip8.ram[0x0213] = 0x18;
+        // Set register i to the address of sprite
+        chip8.ram[0x021E] = 0xA2;
+        chip8.ram[0x021F] = 0x24;
 
         // Draw 1 pixel (value in n) tall sprite in the coords A, B (values in VA, VB)
-        chip8.ram[0x0214] = 0xDA;
-        chip8.ram[0x0215] = 0xB6;
+        chip8.ram[0x0220] = 0xDA;
+        chip8.ram[0x0221] = 0xB6;
 
         // Infinite loop            
             // Jump to 0x02A0
-            chip8.ram[0x0216] = 0x12;
-            chip8.ram[0x0217] = 0x00;
+            chip8.ram[0x0222] = 0x12;
+            chip8.ram[0x0223] = 0x00;
             
         
     } else {

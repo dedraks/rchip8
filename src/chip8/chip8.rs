@@ -619,7 +619,7 @@ impl CHIP8 {
 
                         // 0xFX55
                         // Store registers V0 through Vx in memory starting at location I.
-                        
+
                         0x0055 => self.op_fx55(word),
 
                         // 0xFX65
@@ -688,6 +688,8 @@ impl KeyState {
         }
     }
 
+    // Checks the state of key
+    // Returns true if the key is currently pressed, false otherwise
     fn check_key(&self, key: u8) -> bool {
         match key {
             0   => self.key_0,
@@ -710,6 +712,8 @@ impl KeyState {
         }
     }
 
+    // Sets the state of key
+    // True, the key is currently pressed, false otherwise
     fn set_key_state(&mut self, key_code: Keycode, state: bool) {
         match key_code {
             Keycode::Num1 => self.key_1 = state,

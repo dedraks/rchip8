@@ -4,7 +4,7 @@ A CHIP-8 emulator/interpreter in Rust
 To run the emulator just type "cargo run".
 It will run a simple inline program in main.
 
-The program plays a sound an draw a alien o screen.
+The program plays a sound an draw an alien on screen.
 You can move the alien pressing the emulated 0, 5, 7 and 9 keys.
 The actual keys from computer keyboard is W, A, D and X.
 

@@ -240,17 +240,17 @@ impl CHIP8 {
         println!("X = 0x{:01X}", self.v[x_index]);
         println!("Y = 0x{:01X}", self.v[y_index]);
 
-        if self.v[x_index] > self.v[y_index] {
-            self.v[0xF] = 1;
-            self.v[x_index] -= self.v[y_index];
-        } else {
+        let result:i16 = self.v[x_index] as i16 - self.v[y_index] as i16;
+        
+        if result < 0 {
+            self.v[x_index] = (result & 0x00FF) as u8;
             self.v[0xF] = 0;
-            self.v[x_index] = 0;
+        } else {
+            self.v[x_index] -= self.v[y_index];
+            self.v[0xF] = 1;
         }
 
         println!("X => 0x{:01X}", self.v[x_index]);
-
-        //panic!("");
     }
 
     fn op_8xy6(&mut self, word: u16) {

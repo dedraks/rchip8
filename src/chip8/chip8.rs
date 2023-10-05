@@ -463,7 +463,7 @@ impl CHIP8 {
     }
 
     /// Run the emulation
-    pub fn run(&mut self)  -> Result<(), String> {
+    pub fn run(&mut self, fps: u32)  -> Result<(), String> {
 
         let mut event_pump = self.display.sdl_context.event_pump()?;
 
@@ -666,7 +666,7 @@ impl CHIP8 {
             self.display.render();
     
             // Time management!
-            ::std::thread::sleep(Duration::new(0, 1_000_000_000u32 / 60));
+            ::std::thread::sleep(Duration::new(0, 1_000_000_000u32 / fps));
         }
 
         

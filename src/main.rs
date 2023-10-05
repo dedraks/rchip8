@@ -30,7 +30,7 @@ fn main() -> Result<(), String> {
     
     chip8.load_program(program, program.len());
     
-    chip8.run()
+    chip8.run(args.fps)
 }
 
 
@@ -43,7 +43,10 @@ struct Cli {
     rom: String,
 
     #[arg(short, long, default_value_t = false)]
-    demo: bool
+    demo: bool,
+
+    #[arg(short, long, default_value_t = 60)]
+    fps: u32
 }
 
 fn read_from_disk(filename: &str) -> [u8; MAX_MEM - PROGRAM_ADDRESS] {

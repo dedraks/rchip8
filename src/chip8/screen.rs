@@ -73,12 +73,13 @@ impl Screen {
     }
 
     fn get_pixel(&self, row: usize, col: usize) -> bool {
-        self.data[row * DISPLAY_COLS + col]
+        let index = (row * DISPLAY_COLS + col) % DISPLAY_SIZE;
+        self.data[index]
     }
 
     fn set_pixel(&mut self, row: usize, col: usize, value: bool) {
         //println!("set_pixel({}, {}, {})", row, col, value);
-        let index = row * DISPLAY_COLS + col;
+        let index = (row * DISPLAY_COLS + col) % DISPLAY_SIZE;
         self.data[index] = value;
         //println!("display.data[{}] = {}", index, value);
     }

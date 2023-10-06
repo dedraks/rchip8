@@ -2,7 +2,8 @@ use std::fs::File;
 use std::io::BufReader;
 use std::io::Read;
 use std::env;
-use clap::{Parser, Arg};
+use clap::{Parser, CommandFactory};
+use std::process::exit;
 
 use chip8::memory::MAX_MEM;
 use chip8::chip8::PROGRAM_ADDRESS;
@@ -14,19 +15,23 @@ fn main() -> Result<(), String> {
     let mut chip8 = CHIP8::new();
     
     let args = Cli::parse();
+    
 
-    let mut program = [0; MAX_MEM - PROGRAM_ADDRESS];
-
-    match args.rom.as_str() {
+    let program = match args.rom.as_str() {
 
         "" => match args.demo {
-            true => program = get_demo_program(),
-            false => {}
+            true => get_demo_program(),
+            
+            false => {
+                let mut cmd = Cli::command();
+                cmd.error(clap::error::ErrorKind::MissingRequiredArgument, "").exit();
+            }
         }
         
-        _ => program = read_from_disk(&args.rom)
-    }
+        _ => read_from_disk(&args.rom)
+    };
     
+    chip8.set_debug_level(args.debug);
     
     chip8.load_program(program, program.len());
     
@@ -36,8 +41,9 @@ fn main() -> Result<(), String> {
 
 
 
-/// Search for a pattern in a file and display the lines that contain it.
+/// Commandline parser
 #[derive(Parser)]
+#[command(about = "Dedraks' CHIP8 emulator.")]
 struct Cli {
     #[arg(short, long, default_value_t = String::from(""))]
     rom: String,
@@ -46,7 +52,10 @@ struct Cli {
     demo: bool,
 
     #[arg(short, long, default_value_t = 60)]
-    fps: u32
+    fps: u32,
+
+    #[arg(long, default_value_t = 0)]
+    debug: u32
 }
 
 fn read_from_disk(filename: &str) -> [u8; MAX_MEM - PROGRAM_ADDRESS] {

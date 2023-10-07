@@ -2,5 +2,16 @@
     "rust-analyzer.linkedProjects": [
         "./Cargo.toml",
         "./Cargo.toml"
+    ],
+    "cSpell.words": [
+        "annn",
+        "Annn",
+        "bnnn",
+        "Bnnn",
+        "cxnn",
+        "dxnn",
+        "dxyn",
+        "SKNP",
+        "SUBN"
     ]
 }

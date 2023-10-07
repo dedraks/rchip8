@@ -139,7 +139,7 @@ impl CHIP8 {
         let addr = self.decode_nnn(word);
         self.pc = addr;
         if self.debug_level > 0 {
-            println!("{:04X}: JMP 0x{:04X}", word, addr);
+            println!("{:04X}: JP 0x{:04X}", word, addr);
         }
     }
 
@@ -158,7 +158,7 @@ impl CHIP8 {
         let x_index = self.decode_x_index(word);
         let value = self.decode_nn(word);
         if self.debug_level > 0 {
-            println!("{:04X}: Skip next instruction if V{:01X} == {:02X}",word, x_index, value);
+            println!("{:04X}: SE V{:01X}, {:02X}",word, x_index, value);
         }
         if self.v[x_index] == value {
             //println!("V{:01X}: {:02X} - Increment PC by 2.", x_index, value);
@@ -172,7 +172,7 @@ impl CHIP8 {
         let x_index = self.decode_x_index(word);
         let value = self.decode_nn(word);
         if self.debug_level > 0 {
-            println!("{:04X}: Skip next instruction if V{:01X} != 0x{:02X}", word, x_index, value);
+            println!("{:04X}: SNE V{:01X}, 0x{:02X}", word, x_index, value);
         }
         if self.v[x_index] != value {
             //println!("Skipping...");
@@ -184,7 +184,7 @@ impl CHIP8 {
         let x_index = self.decode_x_index(word);
         let y_index = self.decode_y_index(word);
         if self.debug_level > 0 {
-            println!("{:04X}: - Skip next instruction if V{:01X} == V{:01X}", word, x_index, y_index);
+            println!("{:04X}: - SE V{:01X}, V{:01X}", word, x_index, y_index);
         }
         if self.v[x_index] == self.v[y_index] {
             self.pc += 2;
@@ -197,7 +197,7 @@ impl CHIP8 {
         //println!("{}", i);
         self.v[x_index] = value as u8;
         if self.debug_level > 0 {
-            println!("{:04X}: LOAD V{:01X}, 0x{:02X}", word, x_index, self.v[x_index]);
+            println!("{:04X}: LD V{:01X}, 0x{:02X}", word, x_index, self.v[x_index]);
         }
         //println!("V{:01X} => 0x{:04X}", x_index, self.v[x_index]);
     }
@@ -231,7 +231,7 @@ impl CHIP8 {
         self.v[x_index] = self.v[y_index];
 
         if self.debug_level > 0 {
-            println!("{:04X}: LOAD V{:01X}, V{:01X}", word, x_index, y_index);
+            println!("{:04X}: LD V{:01X}, V{:01X}", word, x_index, y_index);
         }
     }
 
@@ -284,10 +284,10 @@ impl CHIP8 {
         let x_index = self.decode_x_index(word);
         let y_index = self.decode_y_index(word);
 
-        println!("8{:01X}{:01X}5", x_index, y_index);
+        //println!("8{:01X}{:01X}5", x_index, y_index);
 
-        println!("X = 0x{:01X}", self.v[x_index]);
-        println!("Y = 0x{:01X}", self.v[y_index]);
+        //println!("X = 0x{:01X}", self.v[x_index]);
+        //println!("Y = 0x{:01X}", self.v[y_index]);
 
         let result:i16 = self.v[x_index] as i16 - self.v[y_index] as i16;
         
@@ -299,7 +299,7 @@ impl CHIP8 {
             self.v[0xF] = 1;
         }
 
-        println!("X => 0x{:01X}", self.v[x_index]);
+        //println!("X => 0x{:01X}", self.v[x_index]);
 
         if self.debug_level > 0 {
             println!("{:04X}: SUB V{:01X}, V{:01X}", word, x_index, y_index);
@@ -318,7 +318,7 @@ impl CHIP8 {
         self.v[x_index] = self.v[x_index] >> 1;
 
         if self.debug_level > 0 {
-            println!("{:04X}: SHIFTR V{:01X}", word, self.v[x_index]) ;
+            println!("{:04X}: SHR V{:01X}", word, self.v[x_index]) ;
         }
     }
 
@@ -335,7 +335,7 @@ impl CHIP8 {
         self.v[x_index] = self.v[y_index] - self.v[x_index];
 
         if self.debug_level > 0 {
-            println!("{:04X}: ", word);
+            println!("{:04X}: SUBN V{:01X}, V{:01X}", word, x_index, y_index);
         }
     }
 
@@ -351,7 +351,7 @@ impl CHIP8 {
         self.v[x_index] = self.v[x_index] << 1;
 
         if self.debug_level > 0 {
-            println!("{:04X}: SHIFTL V{:01X}", word, self.v[x_index]) ;
+            println!("{:04X}: SHL V{:01X}", word, self.v[x_index]) ;
         }
     }
 
@@ -363,7 +363,7 @@ impl CHIP8 {
         }
 
         if self.debug_level > 0 {
-            println!("{:04X}:", word);
+            println!("{:04X}: SNE V{:01X}, V{:01X}", word, x_index, y_index);
         }
     }
 
@@ -371,7 +371,7 @@ impl CHIP8 {
         let value = self.decode_nnn(word);
         self.i = value;
         if self.debug_level > 0 {
-            println!("{:04X}: LOAD I, {:03X}", word, value);
+            println!("{:04X}: LD I, {:03X}", word, value);
         }
     }
 
@@ -380,7 +380,7 @@ impl CHIP8 {
         self.pc = self.v[0] as u16 + addr;
 
         if self.debug_level > 0 {
-            println!("{:04X}: JMP0 {:03X}", word, addr);
+            println!("{:04X}: JP V0, {:03X}", word, addr);
         }
     }
 
@@ -390,21 +390,30 @@ impl CHIP8 {
         let mut rng = rand::thread_rng();
         let r = rng.gen_range(0..0xff) as u8;
         let val = r & value;
-        println!("Set random number 0x{:02X} to V{:01X}", val, x_index);
         self.v[x_index as usize] = val;
+
+        if self.debug_level > 0 {
+            //println!("Set random number 0x{:02X} to V{:01X}", val, x_index);
+            println!("{:04X}: RND V{:01X}, 0x{:02X}", word, x_index, value);
+        }
     }
 
     fn op_dxyn(&mut self, word: u16) {
                     
-        println!("DXYN: Draw");   
+        //println!("DXYN: Draw");   
 
         let x_index = self.decode_x_index(word);
         let y_index = self.decode_y_index(word);
         let n = self.decode_n(word);
         let x = self.v[x_index] & 63;
         let y = self.v[y_index] & 31;
-        println!("({}, {})", x, y);
-        println!("n {}", n);
+        //println!("({}, {})", x, y);
+        //println!("n {}", n);
+
+        if self.debug_level > 0 {
+            println!("{:04X}: DRW {:01X}, {:02X}, {:01X}", word, x_index, y_index, n);
+        }
+        
         
         self.display.buffer_graphics(&mut self.ram, y, x, n,  self.i,);
     }
@@ -416,6 +425,10 @@ impl CHIP8 {
         if self.key_state.check_key(x_index) {
             self.pc += 2;
         }
+
+        if self.debug_level > 0 {
+            println!("{:04X}: SKIP V{:01X}", word, x_index);
+        }
     }
 
     /// EXA1 -> Skip next instruction if key with the value of Vx is not pressed.
@@ -425,12 +438,20 @@ impl CHIP8 {
         if ! self.key_state.check_key(self.v[x_index]) {
             self.pc += 2;
         }
+
+        if self.debug_level > 0 {
+            println!("{:04X}: SKNP V{:01X}", word, x_index);
+        }
     }
 
     /// 0xFX07 -> V[X] = DT - The value of DT is placed into Vx.
     fn op_fx07(&mut self, word: u16) {
         let x_index = usize::from((word & 0x0F00) >> 8);
         self.v[x_index] = self.dt;
+
+        if self.debug_level > 0 {
+            println!("{:04X}: LD V{:01X}, DT", word, x_index);
+        }
     }
 
     /// FX0A -> Wait for a key press, store the value of the key in Vx.
@@ -450,16 +471,28 @@ impl CHIP8 {
         } else {
             self.pc -= 2;
         }
+
+        if self.debug_level > 0 {
+            println!("{:04X}: LD V{:01X}, K", word, x_index);
+        }
     }
 
     fn op_fx15(&mut self, word: u16) {
         let x_index = self.decode_x_index(word);
         self.dt = self.v[x_index];
+
+        if self.debug_level > 0 {
+            println!("{:04X}: LD DT, V{:01X}", word, x_index);
+        }
     }
 
     fn op_fx18(&mut self, word: u16) {
         let x_index = self.decode_x_index(word);
         self.st = self.v[x_index];
+
+        if self.debug_level > 0 {
+            println!("{:04X}: LD ST, V{:01X}", word, x_index);
+        }
     }
 
     fn op_fx1e(&mut self, word: u16) {
@@ -471,6 +504,10 @@ impl CHIP8 {
             self.v[0xF] = 1;
         }
         self.i = self.i % 0x1000;
+
+        if self.debug_level > 0 {
+            println!("{:04X}: ADD I, V{:01X}", word, x_index);
+        }
     }
 
     /// Set I = location of sprite for digit Vx.
@@ -478,13 +515,17 @@ impl CHIP8 {
     fn op_fx29(&mut self, word: u16) {
         //panic!("Not yet implemented");
         let x_index = self.decode_x_index(word);
-        println!("F{:01X}29", x_index);
-        println!("V{:01X}: 0x{:02X}", x_index, self.v[x_index]);
-        println!("Font base addr: 0x{:04X}", FONT_ADDRESS);
+        //println!("F{:01X}29", x_index);
+        //println!("V{:01X}: 0x{:02X}", x_index, self.v[x_index]);
+        //println!("Font base addr: 0x{:04X}", FONT_ADDRESS);
         let font_addr = (5 * self.v[x_index] as usize + FONT_ADDRESS) as u16;
-        println!("Font addr: 0x{:04X}", font_addr);
+        //println!("Font addr: 0x{:04X}", font_addr);
         //panic!("");
         self.i = font_addr;
+
+        if self.debug_level > 0 {
+            println!("{:04X}: LD F, V{:01X}", word, x_index);
+        }
         
     }
 
@@ -495,6 +536,10 @@ impl CHIP8 {
         self.ram[self.i as usize] = self.v[x_index] / 100;
         self.ram[self.i as usize + 1] = self.v[x_index] % 100 / 10;
         self.ram[self.i as usize + 2] = self.v[x_index] % 10;
+
+        if self.debug_level > 0 {
+            println!("{:04X}: LD B, V{:01X}", word, x_index);
+        }
     }
 
     /// Store registers V0 through Vx in memory starting at location I.
@@ -504,6 +549,10 @@ impl CHIP8 {
         for i in 0..=max_x_index {
             self.ram[self.i as usize + i] = self.v[i];
         }
+
+        if self.debug_level > 0 {
+            println!("{:04X}: LD [I], V{:01X}", word, max_x_index);
+        }
     }
 
     /// Read registers V0 through Vx from memory starting at location I.
@@ -512,6 +561,10 @@ impl CHIP8 {
         let max_x_index = self.decode_x_index(word);
         for i in 0..=max_x_index {
             self.v[i] = self.ram[self.i as usize + i];
+        }
+
+        if self.debug_level > 0 {
+            println!("{:04X}: LD V{:01X}, [I]", word, max_x_index);
         }
     }
 
@@ -579,7 +632,7 @@ impl CHIP8 {
             }
     
             // Update
-            println!("PC: 0x{:04X}", self.pc);
+            //println!("PC: 0x{:04X}", self.pc);
             let word = self.fetch_word();
             let ins_category = word & 0xF000;
             let nn = self.decode_nn(word);

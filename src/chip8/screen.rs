@@ -99,7 +99,7 @@ impl Screen {
             sprite[usize::from(s - i)] = mem[usize::from(s)];
         }
 
-        println!("Sprite at {}, {}", vx, vy);
+        //println!("Sprite at {}, {}", vx, vy);
         for row in 0..usize::from(n) {
             //println!("Sprite row: 0x{:02X} {:08b}", sprite[row], sprite[row]);
 
@@ -133,7 +133,7 @@ impl Screen {
                 present = true;
             }
         }
-        println!("");
+        //println!("");
 
 
         /*self.canvas.set_draw_color(Color::RGB(255, 255, 255));

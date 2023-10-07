@@ -1,8 +1,21 @@
 # rchip8
 A CHIP-8 emulator/interpreter in Rust
 
-To run the emulator just type "cargo run".
+To run the emulator just type 
+```terminal
+"cargo run -- -d".
+```
 It will run a simple inline program in main.
+
+Commandline switches:
+
+```terminal
+-r, --rom <ROM> : Choose ROM file to execute
+-d, --demo : Run the demo program
+-f, --fps <FPS> : Set emulation speed [default: 60]
+--debug <N> : Set degug level. [default: 0]
+-h, --help           Print help
+```
 
 The program plays a sound an draw an alien on screen.
 You can move the alien pressing the emulated 0, 5, 7 and 9 keys.

@@ -139,7 +139,7 @@ impl CHIP8 {
         let addr = self.decode_nnn(word);
         self.pc = addr;
         if self.debug_level > 0 {
-            println!("{:04X}: JP 0x{:04X}", word, addr);
+            println!("{:04X}: JP 0x{:03X}", word, addr);
         }
     }
 
@@ -150,7 +150,7 @@ impl CHIP8 {
         self.pc = addr;
 
         if self.debug_level > 0 {
-            println!("{:04X}: CALL 0x{:04X}", word, addr);
+            println!("{:04X}: CALL 0x{:03X}", word, addr);
         }
     }
 
@@ -184,7 +184,7 @@ impl CHIP8 {
         let x_index = self.decode_x_index(word);
         let y_index = self.decode_y_index(word);
         if self.debug_level > 0 {
-            println!("{:04X}: - SE V{:01X}, V{:01X}", word, x_index, y_index);
+            println!("{:04X}: SE V{:01X}, V{:01X}", word, x_index, y_index);
         }
         if self.v[x_index] == self.v[y_index] {
             self.pc += 2;
@@ -371,7 +371,7 @@ impl CHIP8 {
         let value = self.decode_nnn(word);
         self.i = value;
         if self.debug_level > 0 {
-            println!("{:04X}: LD I, {:03X}", word, value);
+            println!("{:04X}: LD I, 0x{:03X}", word, value);
         }
     }
 
@@ -380,7 +380,7 @@ impl CHIP8 {
         self.pc = self.v[0] as u16 + addr;
 
         if self.debug_level > 0 {
-            println!("{:04X}: JP V0, {:03X}", word, addr);
+            println!("{:04X}: JP V0, 0x{:03X}", word, addr);
         }
     }
 
@@ -411,7 +411,7 @@ impl CHIP8 {
         //println!("n {}", n);
 
         if self.debug_level > 0 {
-            println!("{:04X}: DRW {:01X}, {:02X}, {:01X}", word, x_index, y_index, n);
+            println!("{:04X}: DRW 0x{:01X}, 0x{:01X}, 0x{:01X}", word, x_index, y_index, n);
         }
         
         
@@ -427,7 +427,7 @@ impl CHIP8 {
         }
 
         if self.debug_level > 0 {
-            println!("{:04X}: SKIP V{:01X}", word, x_index);
+            println!("{:04X}: SKP V{:01X}", word, x_index);
         }
     }
 

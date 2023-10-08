@@ -24,6 +24,8 @@ The actual keys from computer keyboard is W, A, D and X.
 You can run any chip8 rom.
 In the roms folder, there are some.
 
+![image](https://github.com/dedraks/rchip8/assets/843727/86219bd2-7761-41f7-9a58-4c0dff0a9e84)
+
 ![image](https://github.com/dedraks/rchip8/assets/843727/f2fe18c1-e850-49d3-a817-b5129b5e8b31)
 
 ![image](https://github.com/dedraks/rchip8/assets/843727/5aa660e4-f3e8-4c42-a4de-81562962d132)

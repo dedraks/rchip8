@@ -88,7 +88,7 @@ impl Screen {
             .build()
             .expect("Não foi possível inicializar o subsistema de vídeo. :(");
 
-        debug_window.set_position(WindowPos::from(debug_window.position().0 + 640 )  , WindowPos::from(debug_window.position().1));
+        debug_window.set_position(WindowPos::from(debug_window.position().0 + 650 )  , WindowPos::from(debug_window.position().1));
         if ! debug {
             debug_window.hide();
         }
@@ -215,7 +215,7 @@ impl Screen {
         }
 
 
-        let sp_text = format!("SP: 0x{:04X}", sp);
+        let sp_text = format!("SP: 0x{:02X}", sp);
         let sp_surface = font
             .render(&sp_text)
             .blended(Color::RGBA(255, 0, 0, 255))

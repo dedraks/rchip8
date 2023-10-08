@@ -905,7 +905,7 @@ impl CHIP8 {
             self.display.render();
 
             if self.debug_level > 0 {
-                self.display.render_debug(self.pc, self.v, self.dt, self.st, self.sp, self.stack);
+                self.display.render_debug(self.pc, self.v, self.dt, self.st, self.sp, self.i, self.stack);
             }
     
             // Time management!

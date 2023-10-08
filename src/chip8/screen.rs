@@ -156,7 +156,7 @@ impl Screen {
     }
 
     
-    pub fn render_debug(&mut self, pc: u16, v: [u8; 16], dt: u8, st: u8, sp: usize, stack: [u16; 16]) {
+    pub fn render_debug(&mut self, pc: u16, v: [u8; 16], dt: u8, st: u8, sp: usize, i: u16, stack: [u16; 16]) {
         
         self.debug_canvas.set_draw_color(self.background_color);
         self.debug_canvas.clear();
@@ -225,6 +225,17 @@ impl Screen {
             .map_err(|e| e.to_string()).expect("msg");
         let sp_target = rect!(0, 526, 100, 25);
         self.debug_canvas.copy(&sp_texture, None, Some(sp_target)).expect("msg");
+
+        let i_text = format!("I: 0x{:04X}", i);
+        let i_surface = font
+            .render(&i_text)
+            .blended(Color::RGBA(255, 0, 0, 255))
+            .map_err(|e| e.to_string()).expect("msg");
+        let i_texture = texture_creator
+            .create_texture_from_surface(&i_surface)
+            .map_err(|e| e.to_string()).expect("msg");
+        let i_target = rect!(0, 551, 100, 25);
+        self.debug_canvas.copy(&i_texture, None, Some(i_target)).expect("msg");
 
 
 

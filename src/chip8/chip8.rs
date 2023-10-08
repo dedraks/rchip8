@@ -71,14 +71,14 @@ pub struct CHIP8 {
 
 impl CHIP8 {
     /// Returns a chip-8 machine/interpreter
-    pub fn new() -> Self {
+    pub fn new(debug_level: u32) -> Self {
         //let mut mem = memory::Memory::new();
         let mut ram = [0; 4096];
 
         ram[FONT_ADDRESS .. FONT.len() + FONT_ADDRESS].copy_from_slice(&FONT);
 
         CHIP8 {
-            display: Screen::new(),
+            display: Screen::new(debug_level > 1),
             ram: ram,
             pc: PROGRAM_ADDRESS as u16,
             i: 0,
@@ -89,7 +89,7 @@ impl CHIP8 {
             st: 0,
             key_state: KeyState::new(),
             synth: Synth::new(),
-            debug_level: 0,
+            debug_level: debug_level,
         }
     }
     
@@ -903,6 +903,10 @@ impl CHIP8 {
 
             // Render
             self.display.render();
+
+            if self.debug_level > 0 {
+                self.display.render_debug(self.pc, self.v, self.dt, self.st, self.sp, self.stack);
+            }
     
             // Time management!
             ::std::thread::sleep(Duration::new(0, 1_000_000_000u32 / fps));

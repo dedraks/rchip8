@@ -12,7 +12,7 @@ use crate::chip8::chip8::CHIP8;
 mod chip8;
 
 fn main() -> Result<(), String> {
-    let mut chip8 = CHIP8::new();
+    
     
     let args = Cli::parse();
     
@@ -31,7 +31,8 @@ fn main() -> Result<(), String> {
         _ => read_from_disk(&args.rom)
     };
     
-    chip8.set_debug_level(args.debug);
+    let mut chip8 = CHIP8::new(args.debug);
+    
     
     chip8.load_program(program, program.len());
     

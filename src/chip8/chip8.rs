@@ -96,6 +96,19 @@ impl CHIP8 {
         }
     }
     
+
+    fn reset(&mut self) {
+        self.pc = PROGRAM_ADDRESS as u16;
+        self.i = 0;
+        self.stack = [0; 16];
+        self.sp = 0x00;
+        self.v = [0; 16];
+        self.dt = 0;
+        self.st = 0;
+        
+        self.display.clear_screen();
+    }
+
     pub fn set_debug_level(&mut self, debug_level: u32) {
         self.debug_level = debug_level;
     }
@@ -724,6 +737,7 @@ impl CHIP8 {
                     Event::KeyDown { keycode: Some(keycode), .. } => {
                         match keycode {
                             Keycode::Escape => break 'running,
+                            Keycode::F5 => self.reset(),
                             Keycode::Space => {
                                 if paused {
                                     println!("Resuming execution...");

@@ -73,14 +73,14 @@ pub struct CHIP8 {
 
 impl CHIP8 {
     /// Returns a chip-8 machine/interpreter
-    pub fn new(debug_level: u32) -> Self {
+    pub fn new(debug_level: u32, scale_factor: i32) -> Self {
         //let mut mem = memory::Memory::new();
         let mut ram = [0; 4096];
 
         ram[FONT_ADDRESS .. FONT.len() + FONT_ADDRESS].copy_from_slice(&FONT);
 
         CHIP8 {
-            display: Screen::new(debug_level > 1),
+            display: Screen::new(debug_level > 1, scale_factor),
             ram: ram,
             pc: PROGRAM_ADDRESS as u16,
             i: 0,

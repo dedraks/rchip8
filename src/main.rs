@@ -16,6 +16,9 @@ fn main() -> Result<(), String> {
     
     let args = Cli::parse();
     
+    if args.scale < 0 || args.scale > 5 {
+        panic!("Scale must be between 1 and 5");
+    }
 
     let program = match args.rom.as_str() {
 
@@ -31,7 +34,7 @@ fn main() -> Result<(), String> {
         _ => read_from_disk(&args.rom)
     };
     
-    let mut chip8 = CHIP8::new(args.debug);
+    let mut chip8 = CHIP8::new(args.debug, args.scale);
     
     
     chip8.load_program(program, program.len());
@@ -56,7 +59,10 @@ struct Cli {
     fps: u32,
 
     #[arg(long, default_value_t = 0)]
-    debug: u32
+    debug: u32,
+
+    #[arg(short, long, default_value_t = 1)]
+    scale: i32
 }
 
 fn read_from_disk(filename: &str) -> [u8; MAX_MEM - PROGRAM_ADDRESS] {

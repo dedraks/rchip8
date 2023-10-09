@@ -53,7 +53,7 @@ pub struct Screen {
 
 impl Screen {
 
-    pub fn new(debug: bool) -> Self {
+    pub fn new(debug: bool, scale_factor: i32) -> Self {
 
         
         let sdl_context = sdl2::init().unwrap();
@@ -64,8 +64,8 @@ impl Screen {
 
         let mut window = video_subsystem.window("Dedraks' CHIP-8 Emulator", 
             //(DISPLAY_COLS * 10 + 200) as u32, 
-            (DISPLAY_COLS * DISPLAY_SCALE) as u32, 
-            (DISPLAY_ROWS * DISPLAY_SCALE) as u32
+            (DISPLAY_COLS * scale_factor  as usize * 10) as u32, 
+            (DISPLAY_ROWS * scale_factor as usize * 10) as u32
         )
             .position_centered()
             .build()

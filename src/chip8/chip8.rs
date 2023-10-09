@@ -66,6 +66,8 @@ pub struct CHIP8 {
     synth: Synth,
 
     debug_level: u32,
+
+    debug_fx0a: i32
 }
 
 
@@ -90,6 +92,7 @@ impl CHIP8 {
             key_state: KeyState::new(),
             synth: Synth::new(),
             debug_level: debug_level,
+            debug_fx0a: 1,
         }
     }
     
@@ -563,12 +566,14 @@ impl CHIP8 {
         // Otherwise decrements the program counter by 2
         if key != 255 {
             self.v[x_index] = key;
+            self.debug_fx0a = 2;
         } else {
             self.pc -= 2;
         }
 
-        if self.debug_level > 0 {
+        if self.debug_level > 0 && self.debug_fx0a > 0 {
             println!("{:04X}: LD V{:01X}, K", word, x_index);
+            self.debug_fx0a -= 1;
         }
     }
 

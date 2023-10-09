@@ -23,7 +23,9 @@ You can move the alien pressing the emulated 0, 5, 7 and 9 keys.
 The actual keys from computer keyboard is W, A, D and X.
 
 To pause/resume emulation, press SPACE.
+
 To reset emulation, press F5.
+
 To run emulation step by step, press F6. Then press F6 to run next step.
 
 You can run any chip8 rom.

@@ -718,54 +718,8 @@ impl CHIP8 {
         }
     }
 
-    /// Run the emulation
-    pub fn run(&mut self, fps: u32)  -> Result<(), String> {
-
-        let mut event_pump = self.display.sdl_context.event_pump()?;
-
-        let mut paused = false;
-
-        'running: loop {
-
-
-
-            // Handle events
-            for event in event_pump.poll_iter() {
-                match event {
-                    Event::Quit {..} => break 'running,
-                    Event::KeyDown { keycode: Some(keycode), .. } => {
-                        match keycode {
-                            Keycode::Escape => break 'running,
-                            Keycode::F5 => {
-                                println!("Reset emulator.");
-                                self.reset();
-                                paused = false;
-                            },
-                            Keycode::Space => {
-                                if paused {
-                                    println!("Resuming execution...");
-                                    paused = false;
-                                } else {
-                                    println!("Pausing execution...");
-                                    paused = true;
-                                }
-                            }
-                            _ => self.key_state.set_key_state(keycode, true)
-                        }
-                    }
-                    Event::KeyUp { keycode: Some(keycode), .. } => {
-                        self.key_state.set_key_state(keycode, false);
-                    }
-                    _ => {}
-                }
-            }
-
-            if paused {
-                ::std::thread::sleep(Duration::new(0, 1_000_000_000u32 / fps));
-                continue 'running;
-            }
-    
-            // Update
+    fn tick(&mut self) {
+// Update
             //println!("PC: 0x{:04X}", self.pc);
             let word = self.fetch_word();
             let ins_category = word & 0xF000;
@@ -930,6 +884,63 @@ impl CHIP8 {
             if self.debug_level > 0 {
                 self.display.render_debug(self.pc, self.v, self.dt, self.st, self.sp, self.i, self.stack);
             }
+    }
+
+    
+    /// Run the emulation
+    pub fn run(&mut self, fps: u32)  -> Result<(), String> {
+
+        let mut event_pump = self.display.sdl_context.event_pump()?;
+
+        let mut paused = false;
+
+        'running: loop {
+
+
+
+            // Handle events
+            for event in event_pump.poll_iter() {
+                match event {
+                    Event::Quit {..} => break 'running,
+                    Event::KeyDown { keycode: Some(keycode), .. } => {
+                        match keycode {
+                            Keycode::Escape => break 'running,
+                            Keycode::F5 => {
+                                println!("Reset emulator.");
+                                self.reset();
+                                paused = false;
+                            },
+                            Keycode::F6 => {
+                                if ! paused {
+                                    paused = true;
+                                }
+                                self.tick();
+                            },
+                            Keycode::Space => {
+                                if paused {
+                                    println!("Resuming execution...");
+                                    paused = false;
+                                } else {
+                                    println!("Pausing execution...");
+                                    paused = true;
+                                }
+                            }
+                            _ => self.key_state.set_key_state(keycode, true)
+                        }
+                    }
+                    Event::KeyUp { keycode: Some(keycode), .. } => {
+                        self.key_state.set_key_state(keycode, false);
+                    }
+                    _ => {}
+                }
+            }
+
+            if paused {
+                ::std::thread::sleep(Duration::new(0, 1_000_000_000u32 / fps));
+                continue 'running;
+            }
+    
+            self.tick();
     
             // Time management!
             ::std::thread::sleep(Duration::new(0, 1_000_000_000u32 / fps));

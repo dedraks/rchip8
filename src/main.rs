@@ -5,7 +5,7 @@ use std::env;
 use clap::{Parser, CommandFactory};
 use std::process::exit;
 
-use chip8::memory::MAX_MEM;
+use chip8::chip8::MAX_MEM;
 use chip8::chip8::PROGRAM_ADDRESS;
 
 use crate::chip8::chip8::CHIP8;

@@ -3,12 +3,11 @@ use std::time::Duration;
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 use std::{thread, time};
-use crate::chip8::memory;
 use crate::chip8::screen::Screen;
 use crate::chip8::synth::Synth;
 use crate::chip8::chip8::thread::JoinHandle;
-use super::memory::MAX_MEM;
 
+pub const MAX_MEM: usize = 1024 * 4;
 //use super::screen::Screen;
 
 pub const PROGRAM_ADDRESS: usize = 0x0200;
@@ -701,7 +700,7 @@ impl CHIP8 {
     fn fetch_byte(&mut self) -> u8{
         let byte = self.ram[self.pc as usize];
         self.pc += 1;
-        self.pc %= memory::MAX_MEM as u16; // pc cannot got beyond max memory size
+        self.pc %= MAX_MEM as u16; // pc cannot got beyond max memory size
         byte
     }
 
@@ -713,7 +712,7 @@ impl CHIP8 {
     }
 
     /// Loads a program into memory at address START_VECTOR
-    pub fn load_program(&mut self, program: [u8; memory::MAX_MEM - PROGRAM_ADDRESS], size: usize) {
+    pub fn load_program(&mut self, program: [u8;MAX_MEM - PROGRAM_ADDRESS], size: usize) {
         for i in PROGRAM_ADDRESS..(size + PROGRAM_ADDRESS) {
             self.ram[i] = program[i - PROGRAM_ADDRESS];
         }

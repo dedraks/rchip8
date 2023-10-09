@@ -4,9 +4,7 @@ use sdl2::rect::Point;
 use sdl2::rect::Rect;
 use sdl2::video::WindowPos;
 use sdl2_sys::SDL_RenderSetLogicalSize;
-use crate::chip8::memory::Memory;
 
-use super::chip8::CHIP8;
 
 // handle the annoying Rect i32
 macro_rules! rect(

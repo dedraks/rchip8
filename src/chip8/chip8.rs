@@ -97,6 +97,7 @@ impl CHIP8 {
     
 
     fn reset(&mut self) {
+        self.display.clear_screen();
         self.pc = PROGRAM_ADDRESS as u16;
         self.i = 0;
         self.stack = [0; 16];
@@ -104,8 +105,6 @@ impl CHIP8 {
         self.v = [0; 16];
         self.dt = 0;
         self.st = 0;
-        
-        self.display.clear_screen();
     }
 
     pub fn set_debug_level(&mut self, debug_level: u32) {
@@ -718,8 +717,8 @@ impl CHIP8 {
         }
     }
 
+    /// Decode and execute one instruction.
     fn tick(&mut self) {
-// Update
             //println!("PC: 0x{:04X}", self.pc);
             let word = self.fetch_word();
             let ins_category = word & 0xF000;
@@ -940,6 +939,7 @@ impl CHIP8 {
                 continue 'running;
             }
     
+            // Decode and execute one instruction
             self.tick();
     
             // Time management!

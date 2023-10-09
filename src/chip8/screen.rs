@@ -126,6 +126,7 @@ impl Screen {
         self.data = [false; DISPLAY_SIZE];
         self.canvas.set_draw_color(self.background_color);
         self.canvas.clear();
+        //self.canvas.present();
     }
 
     pub fn buffer_graphics(&mut self, mem: &mut [u8; 4096], vx: u8, vy: u8, n: u8, i: u16) {

@@ -14,12 +14,17 @@ Commandline switches:
 -d, --demo : Run the demo program
 -f, --fps <FPS> : Set emulation speed [default: 60]
 --debug <N> : Set degug level. [default: 0]
+-s N, --scale N : Set display scale to N. [default: 1]. Valid range, 1 to 4.
 -h, --help           Print help
 ```
 
 The program plays a sound an draw an alien on screen.
 You can move the alien pressing the emulated 0, 5, 7 and 9 keys.
 The actual keys from computer keyboard is W, A, D and X.
+
+To pause/resume emulation, press SPACE.
+To reset emulation, press F5.
+To run emulation step by step, press F6. Then press F6 to run next step.
 
 You can run any chip8 rom.
 In the roms folder, there are some.

@@ -737,7 +737,11 @@ impl CHIP8 {
                     Event::KeyDown { keycode: Some(keycode), .. } => {
                         match keycode {
                             Keycode::Escape => break 'running,
-                            Keycode::F5 => self.reset(),
+                            Keycode::F5 => {
+                                println!("Reset emulator.");
+                                self.reset();
+                                paused = false;
+                            },
                             Keycode::Space => {
                                 if paused {
                                     println!("Resuming execution...");
@@ -758,6 +762,7 @@ impl CHIP8 {
             }
 
             if paused {
+                ::std::thread::sleep(Duration::new(0, 1_000_000_000u32 / fps));
                 continue 'running;
             }
     

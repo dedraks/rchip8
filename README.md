@@ -15,6 +15,7 @@ Commandline switches:
 -f, --fps <FPS> : Set emulation speed [default: 60]
 --debug <N> : Set degug level. [default: 0]
 -s N, --scale N : Set display scale to N. [default: 1]. Valid range, 1 to 4.
+--paused, -p : Start emulation in paused state.
 -h, --help           Print help
 ```
 

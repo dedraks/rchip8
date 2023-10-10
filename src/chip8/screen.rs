@@ -51,7 +51,7 @@ pub struct Screen {
 
 impl Screen {
 
-    pub fn new(debug: bool, scale_factor: i32) -> Self {
+    pub fn new(debug: bool, scale_factor: i32, window_title: &str) -> Self {
 
         
         let sdl_context = sdl2::init().unwrap();
@@ -60,7 +60,7 @@ impl Screen {
         let display_mode = sdl_context.video().unwrap().current_display_mode(0).unwrap();
 
 
-        let mut window = video_subsystem.window("Dedraks' CHIP-8 Emulator", 
+        let mut window = video_subsystem.window(window_title, 
             //(DISPLAY_COLS * 10 + 200) as u32, 
             (DISPLAY_COLS * scale_factor  as usize * 10) as u32, 
             (DISPLAY_ROWS * scale_factor as usize * 10) as u32
@@ -77,7 +77,7 @@ impl Screen {
             SDL_RenderSetLogicalSize(canvas.raw(), (DISPLAY_COLS) as i32, DISPLAY_ROWS as i32);
         }
 
-        let mut debug_window = video_subsystem.window("Dedraks' CHIP-8 Emulator - DEBUG", 
+        let mut debug_window = video_subsystem.window(format!("{} - DEBUG", window_title).as_str(), 
             //(DISPLAY_COLS * 10 + 200) as u32, 
             360, 
             640
@@ -107,6 +107,10 @@ impl Screen {
             background_color: Color::RGB(0, 0, 0),
             draw_color: Color::RGB(255, 255, 255)
         }
+    }
+
+    pub fn set_title(&mut self, title: &str) {
+        self.canvas.window_mut().set_title(title);
     }
 
     fn get_pixel(&self, row: usize, col: usize) -> bool {

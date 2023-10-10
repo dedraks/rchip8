@@ -14,6 +14,9 @@ pub const PROGRAM_ADDRESS: usize = 0x0200;
 
 pub const FONT_ADDRESS: usize = 0x50;
 
+const WINDOW_TITLE: &str = "Dedraks' CHIP-8 Emulator";
+const WINDOW_TITLE_PAUSED: &str = "Dedraks' CHIP-8 Emulator - PAUSED";
+
 const FONT: [u8; 80] = 
         [0x60, 0xB0, 0xD0, 0x90, 0x60, // 0
          0x20, 0x60, 0x20, 0x20, 0x70, // 1
@@ -81,7 +84,7 @@ impl CHIP8 {
         ram[FONT_ADDRESS .. FONT.len() + FONT_ADDRESS].copy_from_slice(&FONT);
 
         CHIP8 {
-            display: Screen::new(debug_level > 1, scale_factor),
+            display: Screen::new(debug_level > 1, scale_factor, WINDOW_TITLE),
             ram: ram,
             pc: PROGRAM_ADDRESS as u16,
             i: 0,
@@ -113,11 +116,13 @@ impl CHIP8 {
 
     pub fn pause(&mut self) {
         println!("Pausing execution...");
+        self.display.set_title(WINDOW_TITLE_PAUSED);
         self.paused = true;
     }
 
     pub fn resume(&mut self) {
         println!("Resuming execution...");
+        self.display.set_title(WINDOW_TITLE);
         self.paused = false;
     }
 

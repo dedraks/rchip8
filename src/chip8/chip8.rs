@@ -112,6 +112,7 @@ impl CHIP8 {
         self.v = [0; 16];
         self.dt = 0;
         self.st = 0;
+        self.debug_fx0a += 1;
     }
 
     pub fn pause(&mut self) {

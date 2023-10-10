@@ -1,4 +1,5 @@
 use rand::Rng;
+use sdl2::pixels::Color;
 use std::time::Duration;
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
@@ -113,6 +114,10 @@ impl CHIP8 {
         self.dt = 0;
         self.st = 0;
         self.debug_fx0a += 1;
+
+        self.display.canvas.set_draw_color(Color::RGB(0, 0, 0));
+        self.display.canvas.clear();
+        self.display.canvas.present();
     }
 
     pub fn pause(&mut self) {
@@ -926,7 +931,7 @@ impl CHIP8 {
                             Keycode::F5 => {
                                 println!("Reset emulator.");
                                 self.reset();
-                                self.resume();
+                                //self.resume();
                             },
                             Keycode::F6 => {
                                 if ! self.paused {

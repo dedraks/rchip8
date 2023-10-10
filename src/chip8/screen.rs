@@ -2,6 +2,7 @@ use sdl2::pixels::Color;
 use sdl2::rect;
 use sdl2::rect::Point;
 use sdl2::rect::Rect;
+use sdl2::render::Canvas;
 use sdl2::video::WindowPos;
 use sdl2_sys::SDL_RenderSetLogicalSize;
 
@@ -43,7 +44,7 @@ pub struct Screen {
     pub sdl_context: sdl2::Sdl,
     video_subsystem: sdl2::VideoSubsystem,
     //window: sdl2::video::Window,
-    canvas: sdl2::render::Canvas<sdl2::video::Window>,
+    pub canvas: sdl2::render::Canvas<sdl2::video::Window>,
     debug_canvas: sdl2::render::Canvas<sdl2::video::Window>,
     background_color: Color,
     draw_color: Color,

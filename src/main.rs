@@ -38,6 +38,10 @@ fn main() -> Result<(), String> {
     
     
     chip8.load_program(program, program.len());
+
+    if args.paused {
+        chip8.pause();
+    }
     
     chip8.run(args.fps)
 }
@@ -62,7 +66,10 @@ struct Cli {
     debug: u32,
 
     #[arg(short, long, default_value_t = 1)]
-    scale: i32
+    scale: i32,
+
+    #[arg(short, long, default_value_t = false)]
+    paused: bool,
 }
 
 fn read_from_disk(filename: &str) -> [u8; MAX_MEM - PROGRAM_ADDRESS] {

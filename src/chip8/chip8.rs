@@ -66,7 +66,9 @@ pub struct CHIP8 {
 
     debug_level: u32,
 
-    debug_fx0a: i32
+    debug_fx0a: i32,
+
+    paused: bool,
 }
 
 
@@ -92,6 +94,8 @@ impl CHIP8 {
             synth: Synth::new(),
             debug_level: debug_level,
             debug_fx0a: 1,
+
+            paused: false,
         }
     }
     
@@ -105,6 +109,16 @@ impl CHIP8 {
         self.v = [0; 16];
         self.dt = 0;
         self.st = 0;
+    }
+
+    pub fn pause(&mut self) {
+        println!("Pausing execution...");
+        self.paused = true;
+    }
+
+    pub fn resume(&mut self) {
+        println!("Resuming execution...");
+        self.paused = false;
     }
 
     pub fn set_debug_level(&mut self, debug_level: u32) {
@@ -891,7 +905,6 @@ impl CHIP8 {
 
         let mut event_pump = self.display.sdl_context.event_pump()?;
 
-        let mut paused = false;
 
         'running: loop {
 
@@ -907,21 +920,19 @@ impl CHIP8 {
                             Keycode::F5 => {
                                 println!("Reset emulator.");
                                 self.reset();
-                                paused = false;
+                                self.resume();
                             },
                             Keycode::F6 => {
-                                if ! paused {
-                                    paused = true;
+                                if ! self.paused {
+                                    self.pause();
                                 }
                                 self.tick();
                             },
                             Keycode::Space => {
-                                if paused {
-                                    println!("Resuming execution...");
-                                    paused = false;
+                                if self.paused {
+                                    self.resume();
                                 } else {
-                                    println!("Pausing execution...");
-                                    paused = true;
+                                    self.pause();
                                 }
                             }
                             _ => self.key_state.set_key_state(keycode, true)
@@ -934,7 +945,7 @@ impl CHIP8 {
                 }
             }
 
-            if paused {
+            if self.paused {
                 ::std::thread::sleep(Duration::new(0, 1_000_000_000u32 / fps));
                 continue 'running;
             }
